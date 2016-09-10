@@ -17,6 +17,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         numberOfPhotosTxtField.layer.borderWidth = 1.0
+        numberOfPhotosTxtField.addTarget(self, action: #selector(MainViewController.checkTextField), for: .editingChanged)
         numberOfPhotosTxtField.layer.borderColor = UIColor.blue.cgColor
         
         viewPhotosButton.layer.borderWidth = 1.0
@@ -31,7 +32,6 @@ class MainViewController: UIViewController {
         navTitle.backgroundColor = UIColor.clear
         navTitle.textAlignment = .center
         navTitle.font = UIFont.systemFont(ofSize: 17)
-        
         navigationItem.titleView = navTitle
     }
 
@@ -39,11 +39,25 @@ class MainViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "show photos" && segue.destination is PhotosCollectionVC {
+            let photosVC = segue.destination as! PhotosCollectionVC
+            photosVC.numberOfPhotosToShow = Int(numberOfPhotosTxtField.text!)
+        }
+    }
 
     func hideKeyboard() {
         if (numberOfPhotosTxtField.isFirstResponder) {
             numberOfPhotosTxtField.resignFirstResponder()
         }
     }
+    
+    func checkTextField() {
+        if let text = numberOfPhotosTxtField.text,!text.isEmpty {
+            viewPhotosButton.isEnabled = true
+        } else {
+            viewPhotosButton.isEnabled = false
+        }
+    }
 }
-

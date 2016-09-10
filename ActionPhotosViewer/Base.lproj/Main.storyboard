@@ -44,7 +44,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="View Photos"/>
                                 <connections>
-                                    <segue destination="yRZ-ko-5XW" kind="show" id="j7u-sZ-673"/>
+                                    <segue destination="yRZ-ko-5XW" kind="show" identifier="show photos" id="j7u-sZ-673"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -68,10 +68,10 @@
             </objects>
             <point key="canvasLocation" x="919" y="138"/>
         </scene>
-        <!--Collection View Controller-->
+        <!--Photos CollectionVC-->
         <scene sceneID="o0o-rw-GtP">
             <objects>
-                <collectionViewController id="yRZ-ko-5XW" sceneMemberID="viewController">
+                <collectionViewController id="yRZ-ko-5XW" customClass="PhotosCollectionVC" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="IUP-HL-EEQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -83,7 +83,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="qPg-QS-qf9">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="qPg-QS-qf9">
                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
