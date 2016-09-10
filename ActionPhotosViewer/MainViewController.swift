@@ -26,7 +26,7 @@ class MainViewController: UIViewController {
         view.addGestureRecognizer(viewTap)
         
         let navTitle: UITextView = UITextView(frame: CGRect(x: 0, y: 0, width: 200, height: (navigationController?.navigationBar.frame.height)!))
-        navTitle.text = "Welcome to ActionPhotoViewer"
+        navTitle.text = "Welcome to ActionPhotosViewer"
         navTitle.textColor = UIColor.purple
         navTitle.backgroundColor = UIColor.clear
         navTitle.textAlignment = .center
