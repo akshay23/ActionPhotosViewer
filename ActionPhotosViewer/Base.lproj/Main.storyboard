@@ -27,7 +27,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="10" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="mw1-6B-VSF">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mw1-6B-VSF">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="8kf-j0-9qI"/>
                                 </constraints>
@@ -35,16 +35,16 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Soa-MW-qKA">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Soa-MW-qKA">
                                 <color key="backgroundColor" red="0.7677397474072154" green="0.9171957542613185" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="6Up-l5-mf5"/>
-                                    <constraint firstAttribute="width" constant="134" id="Kb6-DA-0dN"/>
+                                    <constraint firstAttribute="height" constant="45" id="6Up-l5-mf5"/>
+                                    <constraint firstAttribute="width" constant="135" id="Kb6-DA-0dN"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="View Photos"/>
                                 <connections>
-                                    <segue destination="yRZ-ko-5XW" kind="show" identifier="show photos" id="j7u-sZ-673"/>
+                                    <segue destination="M0u-mB-38C" kind="show" identifier="show slideshow" id="xb5-qF-szt"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -68,39 +68,70 @@
             </objects>
             <point key="canvasLocation" x="919" y="138"/>
         </scene>
-        <!--Photos CollectionVC-->
-        <scene sceneID="o0o-rw-GtP">
+        <!--SlideshowVC-->
+        <scene sceneID="CMI-lF-rQ3">
             <objects>
-                <collectionViewController id="yRZ-ko-5XW" customClass="PhotosCollectionVC" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="IUP-HL-EEQ">
+                <viewController id="M0u-mB-38C" customClass="SlideshowVC" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SJD-xG-XWC"/>
+                        <viewControllerLayoutGuide type="bottom" id="stz-3p-WC7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="cOw-Jp-jdg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PS4-0N-swB">
-                            <size key="itemSize" width="50" height="50"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="qPg-QS-qf9">
-                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </view>
-                            </collectionViewCell>
-                        </cells>
-                        <connections>
-                            <outlet property="dataSource" destination="yRZ-ko-5XW" id="Nov-4m-xGU"/>
-                            <outlet property="delegate" destination="yRZ-ko-5XW" id="l5B-Aj-ezG"/>
-                        </connections>
-                    </collectionView>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="MOk-py-fsn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Slideshow" translatesAutoresizingMaskIntoConstraints="NO" id="XRZ-6G-Gwf">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="78G-Ec-voS">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="250"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="300" id="iPN-vp-QgO">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="250"/>
+                                    </constraint>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tYh-PX-DBN">
+                                <color key="backgroundColor" red="0.76773974739999995" green="0.9171957543" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="FKd-NY-zsc"/>
+                                    <constraint firstAttribute="height" constant="45" id="gzh-BW-fxw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Restart"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7vJ-i4-RMX">
+                                <color key="backgroundColor" red="0.76773974739999995" green="0.9171957543" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="RZQ-bz-OK4"/>
+                                    <constraint firstAttribute="height" constant="45" id="y3Y-us-vXb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Stop"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.92671731420000003" green="1" blue="0.70402930829999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" id="9WL-kf-VcQ"/>
+                            <constraint firstItem="7vJ-i4-RMX" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="Iwy-ON-XDI">
+                                <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                            </constraint>
+                            <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerY" secondItem="cOw-Jp-jdg" secondAttribute="centerY" constant="-30" id="N4i-UC-ZnH"/>
+                            <constraint firstItem="tYh-PX-DBN" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="RAT-UL-yV5">
+                                <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                            </constraint>
+                            <constraint firstItem="tYh-PX-DBN" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" constant="55" id="fLU-sJ-zn5"/>
+                            <constraint firstItem="7vJ-i4-RMX" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" constant="-60" id="xp1-qx-Lyj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="restartButton" destination="tYh-PX-DBN" id="rx9-lL-PLq"/>
+                        <outlet property="slideshowImageView" destination="XRZ-6G-Gwf" id="UcX-PM-WEq"/>
+                        <outlet property="stopButton" destination="7vJ-i4-RMX" id="QXt-2P-8Ml"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UE8-Fu-DBZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1719" y="137"/>
+            <point key="canvasLocation" x="1714" y="137"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="VZ2-JA-87G">
@@ -121,4 +152,7 @@
             <point key="canvasLocation" x="135" y="138.38028169014083"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Slideshow" width="512" height="512"/>
+    </resources>
 </document>

@@ -18,10 +18,12 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         numberOfPhotosTxtField.layer.borderWidth = 1.0
+        numberOfPhotosTxtField.layer.cornerRadius = 2.0
         numberOfPhotosTxtField.addTarget(self, action: #selector(MainViewController.checkTextField), for: .editingChanged)
         numberOfPhotosTxtField.layer.borderColor = UIColor.blue.cgColor
         
         viewPhotosButton.layer.borderWidth = 1.0
+        viewPhotosButton.layer.cornerRadius = 2.0
         viewPhotosButton.layer.borderColor = UIColor.blue.cgColor
         
         let viewTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MainViewController.hideKeyboard))
@@ -49,9 +51,10 @@ class MainViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "show photos" && segue.destination is PhotosCollectionVC {
-            let photosVC = segue.destination as! PhotosCollectionVC
+        if segue.identifier == "show slideshow" && segue.destination is SlideshowVC {
+            let photosVC = segue.destination as! SlideshowVC
             photosVC.numberOfPhotosToShow = Int(numberOfPhotosTxtField.text!)
+            hideKeyboard()
         }
     }
 
