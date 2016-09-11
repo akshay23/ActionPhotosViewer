@@ -15,11 +15,13 @@ class SlideshowVC: UIViewController {
     @IBOutlet var slideshowImageView: UIImageView!
     @IBOutlet var restartButton: UIButton!
     @IBOutlet var stopButton: UIButton!
+    @IBOutlet var stylePicker: UIPickerView!
     
     var numberOfPhotosToShow: Int!
     var currentShowIndex: Int!
     var images: [UIImage]?
     var showTimer: Timer!
+    var styles: [String] = ["None","RubyRed","BigBlue","GoGreen"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +46,10 @@ class SlideshowVC: UIViewController {
         navTitle.textAlignment = .center
         navTitle.font = UIFont.systemFont(ofSize: 17)
         navigationItem.titleView = navTitle
+        
+        stylePicker.dataSource = self
+        stylePicker.delegate = self
+        stylePicker.showsSelectionIndicator = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,6 +128,37 @@ class SlideshowVC: UIViewController {
     }
 }
 
+// MARK: UIPickerViewDataSource
+extension SlideshowVC: UIPickerViewDataSource {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return styles.count
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+}
+
+// MARK: UIPickerViewDelegate
+extension SlideshowVC: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return styles[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch styles[row] {
+        case "None":
+            slideshowImageView.tintColor = nil
+            break
+        case "RubyRed":
+            slideshowImageView.tintColor = UIColor.red
+            break
+        default:
+            break;
+        }
+    }
+}
+
 // MARK: IBActions
 extension SlideshowVC {
     @IBAction func restartShow(_ sender: AnyObject) {
@@ -136,3 +173,5 @@ extension SlideshowVC {
         stopButton.isEnabled = false
     }
 }
+
+

@@ -114,6 +114,17 @@
                                     <action selector="stopShow:" destination="M0u-mB-38C" eventType="touchUpInside" id="rHN-P7-iBe"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Style:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZYf-n7-jJH">
+                                <frame key="frameInset" minX="73" minY="96" width="60" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
+                                <color key="textColor" red="0.24212256640951335" green="0.30909589923016112" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QxA-dd-r1i">
+                                <frame key="frameInset" minX="1" minY="42" height="130" maxX="-1"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
                         </subviews>
                         <color key="backgroundColor" red="0.92671731420000003" green="1" blue="0.70402930829999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -121,7 +132,7 @@
                             <constraint firstItem="7vJ-i4-RMX" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="Iwy-ON-XDI">
                                 <variation key="heightClass=compact-widthClass=compact" constant="25"/>
                             </constraint>
-                            <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerY" secondItem="cOw-Jp-jdg" secondAttribute="centerY" constant="-30" id="N4i-UC-ZnH"/>
+                            <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerY" secondItem="cOw-Jp-jdg" secondAttribute="centerY" constant="-20" id="N4i-UC-ZnH"/>
                             <constraint firstItem="tYh-PX-DBN" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="RAT-UL-yV5">
                                 <variation key="heightClass=compact-widthClass=compact" constant="25"/>
                             </constraint>
@@ -133,11 +144,12 @@
                         <outlet property="restartButton" destination="tYh-PX-DBN" id="rx9-lL-PLq"/>
                         <outlet property="slideshowImageView" destination="XRZ-6G-Gwf" id="UcX-PM-WEq"/>
                         <outlet property="stopButton" destination="7vJ-i4-RMX" id="QXt-2P-8Ml"/>
+                        <outlet property="stylePicker" destination="QxA-dd-r1i" id="V9C-84-VCE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UE8-Fu-DBZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1714" y="137"/>
+            <point key="canvasLocation" x="1712.8" y="136.28185907046478"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="VZ2-JA-87G">
