@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import Intents
 
 class MainViewController: UIViewController {
 
@@ -41,6 +42,13 @@ class MainViewController: UIViewController {
             PHPhotoLibrary.requestAuthorization() {
                 status in
                 print("User's photo auth status is \(status.rawValue)")
+            }
+        }
+        
+        if (INPreferences.siriAuthorizationStatus() != .authorized) {
+            INPreferences.requestSiriAuthorization() {
+                status in
+                print("Siri auth is \(status.rawValue)")
             }
         }
     }
