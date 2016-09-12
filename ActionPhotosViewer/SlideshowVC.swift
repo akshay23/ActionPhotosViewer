@@ -16,12 +16,14 @@ class SlideshowVC: UIViewController {
     @IBOutlet var restartButton: UIButton!
     @IBOutlet var stopButton: UIButton!
     @IBOutlet var stylePicker: UIPickerView!
+    @IBOutlet var intentLabel: UILabel!
     
     var numberOfPhotosToShow: Int!
     var currentShowIndex: Int!
     var images: [UIImage]?
     var showTimer: Timer!
     var styles: [String] = ["None","RubyRed","BigBlue","GoGreen"]
+    var intentType: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +66,10 @@ class SlideshowVC: UIViewController {
             restartButton.isEnabled = true
             resetTimer()
             print("Slideshow timer started")
+        }
+        
+        if let intentType = intentType {
+            intentLabel.text = intentType
         }
     }
 

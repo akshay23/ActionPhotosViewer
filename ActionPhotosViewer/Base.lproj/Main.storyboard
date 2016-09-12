@@ -9,7 +9,7 @@
         <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mainVC" id="BYZ-38-t0r" customClass="MainViewController" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -71,7 +71,7 @@
         <!--SlideshowVC-->
         <scene sceneID="CMI-lF-rQ3">
             <objects>
-                <viewController id="M0u-mB-38C" customClass="SlideshowVC" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="slideshowVC" id="M0u-mB-38C" customClass="SlideshowVC" customModule="ActionPhotosViewer" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="SJD-xG-XWC"/>
                         <viewControllerLayoutGuide type="bottom" id="stz-3p-WC7"/>
@@ -125,22 +125,34 @@
                                 <frame key="frameInset" minX="1" minY="42" height="130" maxX="-1"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9EU-6Q-gQ8">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="UiB-vq-LrL"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="textColor" red="1" green="0.087517909395571691" blue="0.12983494138978002" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.92671731420000003" green="1" blue="0.70402930829999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="9EU-6Q-gQ8" firstAttribute="leading" secondItem="7vJ-i4-RMX" secondAttribute="leading" id="2g4-BB-oS0"/>
                             <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" id="9WL-kf-VcQ"/>
                             <constraint firstItem="7vJ-i4-RMX" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="Iwy-ON-XDI">
                                 <variation key="heightClass=compact-widthClass=compact" constant="25"/>
                             </constraint>
                             <constraint firstItem="XRZ-6G-Gwf" firstAttribute="centerY" secondItem="cOw-Jp-jdg" secondAttribute="centerY" constant="-20" id="N4i-UC-ZnH"/>
+                            <constraint firstItem="9EU-6Q-gQ8" firstAttribute="top" secondItem="7vJ-i4-RMX" secondAttribute="bottom" constant="20" id="OMY-6y-FQq"/>
                             <constraint firstItem="tYh-PX-DBN" firstAttribute="top" secondItem="XRZ-6G-Gwf" secondAttribute="bottom" constant="45" id="RAT-UL-yV5">
                                 <variation key="heightClass=compact-widthClass=compact" constant="25"/>
                             </constraint>
                             <constraint firstItem="tYh-PX-DBN" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" constant="55" id="fLU-sJ-zn5"/>
+                            <constraint firstItem="9EU-6Q-gQ8" firstAttribute="trailing" secondItem="tYh-PX-DBN" secondAttribute="trailing" id="kNE-ra-lKA"/>
                             <constraint firstItem="7vJ-i4-RMX" firstAttribute="centerX" secondItem="cOw-Jp-jdg" secondAttribute="centerX" constant="-60" id="xp1-qx-Lyj"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="intentLabel" destination="9EU-6Q-gQ8" id="bVQ-1c-eXS"/>
                         <outlet property="restartButton" destination="tYh-PX-DBN" id="rx9-lL-PLq"/>
                         <outlet property="slideshowImageView" destination="XRZ-6G-Gwf" id="UcX-PM-WEq"/>
                         <outlet property="stopButton" destination="7vJ-i4-RMX" id="QXt-2P-8Ml"/>

@@ -15,7 +15,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        // Get storyboard
+        if let window = self.window {
+            if let rootVC = window.rootViewController, rootVC is UINavigationController {
+                print("RootVC is navi controller")
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let intent = application.userActivity?.interaction?.intent {
+                    print("INTENT is \(intent.identifier)")
+                    let slideshowVC = storyboard.instantiateViewController(withIdentifier: "slideshowVC") as! SlideshowVC
+                    slideshowVC.numberOfPhotosToShow = 3
+                    slideshowVC.intentType = intent.identifier
+                    rootVC.addChildViewController(slideshowVC)
+                } else {
+                    print("NO INTENT")
+                }
+            }
+        }
+        
         return true
     }
 
