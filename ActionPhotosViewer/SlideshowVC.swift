@@ -70,6 +70,8 @@ class SlideshowVC: UIViewController {
         
         if let intentType = intentType {
             intentLabel.text = intentType
+        } else {
+            intentLabel.text = "No Intent"
         }
     }
 
@@ -134,6 +136,21 @@ class SlideshowVC: UIViewController {
     }
 }
 
+// MARK: IBActions
+extension SlideshowVC {
+    @IBAction func restartShow(_ sender: AnyObject) {
+        showTimer.invalidate()
+        currentShowIndex = 0
+        stopButton.isEnabled = true
+        resetTimer()
+    }
+    
+    @IBAction func stopShow(_ sender: AnyObject) {
+        showTimer.invalidate()
+        stopButton.isEnabled = false
+    }
+}
+
 // MARK: UIPickerViewDataSource
 extension SlideshowVC: UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -164,20 +181,3 @@ extension SlideshowVC: UIPickerViewDelegate {
         }
     }
 }
-
-// MARK: IBActions
-extension SlideshowVC {
-    @IBAction func restartShow(_ sender: AnyObject) {
-        showTimer.invalidate()
-        currentShowIndex = 0
-        stopButton.isEnabled = true
-        resetTimer()
-    }
-    
-    @IBAction func stopShow(_ sender: AnyObject) {
-        showTimer.invalidate()
-        stopButton.isEnabled = false
-    }
-}
-
-
