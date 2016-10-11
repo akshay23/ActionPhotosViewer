@@ -9,17 +9,10 @@
 import Intents
 import Photos
 
-class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMessageIntentHandling {
-    
-    override func handler(for intent: INIntent) -> Any {
-        // This is the default implementation.  If you want different objects to handle different intents,
-        // you can override this and return the handler you want for that particular intent.
-        
-        return self
-    }
-    
-// MARK: - INStartPhotoPlaybackIntentHandling
+class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling {
 
+    // Optional method
+    // This is where we can do further checks/validation on the dates provided by the user (if provided)
     func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
                             with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
         if let dateCreated = intent.dateCreated {
@@ -29,6 +22,8 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         }
     }
 
+    // Optional method
+    // Further validation/checks on the album name provided (if any)
     func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
                           with completion: @escaping (INStringResolutionResult) -> Void) {
         if let album = intent.albumName {
@@ -54,11 +49,15 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         }
     }
 
-// Doesn't make sense to support (not keeping track of people info in app)
-//    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
-//    }
+    // Optional method
+    // Validate people info if app unerstands people
+    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
+        completion([INPersonResolutionResult.notRequired()])
+    }
 
+    // Optional method
+    // Further validation/checks on location info provided by user (if any)
     func resolveLocationCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
                                 with completion: @escaping (INPlacemarkResolutionResult) -> Void) {
         if let location = intent.locationCreated {
@@ -67,14 +66,18 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
             completion(INPlacemarkResolutionResult.notRequired())
         }
     }
-    
+
+    // Optional method
+    // Can do other types of validation here (maybe app-specific validations)
     func confirm(startPhotoPlayback intent: INStartPhotoPlaybackIntent,
                  completion: @escaping (INStartPhotoPlaybackIntentResponse) -> Void) {
         let userActivity = NSUserActivity(activityType: NSStringFromClass(INStartPhotoPlaybackIntent.self))
         let response = INStartPhotoPlaybackIntentResponse(code: .ready, userActivity: userActivity)
         completion(response)
     }
-    
+
+    // Required method
+    // We can pass additional information here and the actually handle user intent
     func handle(startPhotoPlayback intent: INStartPhotoPlaybackIntent,
                 completion: @escaping (INStartPhotoPlaybackIntentResponse) -> Void) {
         let activity = NSUserActivity(activityType: NSStringFromClass(INStartPhotoPlaybackIntent.self))
@@ -83,95 +86,4 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         let response = INStartPhotoPlaybackIntentResponse(code: .continueInApp, userActivity: activity)
         completion(response)
     }
-    
-// MARK: - INSendMessageIntentHandling
-    
-    // Implement resolution methods to provide additional information about your intent (optional).
-    func resolveRecipients(forSendMessage intent: INSendMessageIntent, with completion: @escaping ([INPersonResolutionResult]) -> Void) {
-        if let recipients = intent.recipients {
-            
-            // If no recipients were provided we'll need to prompt for a value.
-            if recipients.count == 0 {
-                completion([INPersonResolutionResult.needsValue()])
-                return
-            }
-            
-            var resolutionResults = [INPersonResolutionResult]()
-            for recipient in recipients {
-                let matchingContacts = [recipient] // Implement your contact matching logic here to create an array of matching contacts
-                switch matchingContacts.count {
-                case 2  ... Int.max:
-                    // We need Siri's help to ask user to pick one from the matches.
-                    resolutionResults += [INPersonResolutionResult.disambiguation(with: matchingContacts)]
-                    
-                case 1:
-                    // We have exactly one matching contact
-                    resolutionResults += [INPersonResolutionResult.success(with: recipient)]
-                    
-                case 0:
-                    // We have no contacts matching the description provided
-                    resolutionResults += [INPersonResolutionResult.unsupported()]
-                    
-                default:
-                    break
-                    
-                }
-            }
-            completion(resolutionResults)
-        }
-    }
-    
-    func resolveContent(forSendMessage intent: INSendMessageIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let text = intent.content, !text.isEmpty {
-            completion(INStringResolutionResult.success(with: text))
-        } else {
-            completion(INStringResolutionResult.needsValue())
-        }
-    }
-    
-    // Once resolution is completed, perform validation on the intent and provide confirmation (optional).
-    func confirm(sendMessage intent: INSendMessageIntent, completion: @escaping (INSendMessageIntentResponse) -> Void) {
-        // Verify user is authenticated and your app is ready to send a message.
-        
-        let userActivity = NSUserActivity(activityType: NSStringFromClass(INSendMessageIntent.self))
-        let response = INSendMessageIntentResponse(code: .ready, userActivity: userActivity)
-        completion(response)
-    }
-    
-    // Handle the completed intent (required).
-    func handle(sendMessage intent: INSendMessageIntent, completion: @escaping (INSendMessageIntentResponse) -> Void) {
-        // Implement your application logic to send a message here.
-        let userActivity = NSUserActivity(activityType: NSStringFromClass(INSendMessageIntent.self))
-        let response = INSendMessageIntentResponse(code: .success, userActivity: userActivity)
-        completion(response)
-    }
-    
-// MARK: - INSearchForMessagesIntentHandling
-    
-    func handle(searchForMessages intent: INSearchForMessagesIntent, completion: @escaping (INSearchForMessagesIntentResponse) -> Void) {
-        // Implement your application logic to find a message that matches the information in the intent.
-        
-        let userActivity = NSUserActivity(activityType: NSStringFromClass(INSearchForMessagesIntent.self))
-        let response = INSearchForMessagesIntentResponse(code: .success, userActivity: userActivity)
-        // Initialize with found message's attributes
-        response.messages = [INMessage(
-            identifier: "identifier",
-            content: "I am so excited about SiriKit!",
-            dateSent: Date(),
-            sender: INPerson(personHandle: INPersonHandle(value: "sarah@example.com", type: .emailAddress), nameComponents: nil, displayName: "Sarah", image: nil,  contactIdentifier: nil, customIdentifier: nil),
-            recipients: [INPerson(personHandle: INPersonHandle(value: "+1-415-555-5555", type: .phoneNumber), nameComponents: nil, displayName: "John", image: nil,  contactIdentifier: nil, customIdentifier: nil)]
-            )]
-        completion(response)
-    }
-    
-// MARK: - INSetMessageAttributeIntentHandling
-    
-    func handle(setMessageAttribute intent: INSetMessageAttributeIntent, completion: @escaping (INSetMessageAttributeIntentResponse) -> Void) {
-        // Implement your application logic to set the message attribute here.
-        
-        let userActivity = NSUserActivity(activityType: NSStringFromClass(INSetMessageAttributeIntent.self))
-        let response = INSetMessageAttributeIntentResponse(code: .success, userActivity: userActivity)
-        completion(response)
-    }
 }
-
