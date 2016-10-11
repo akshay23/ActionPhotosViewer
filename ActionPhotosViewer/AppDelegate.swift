@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Intents
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,21 +16,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        return true
+    }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
         
         // Get storyboard
         if let window = self.window, let rootVC = window.rootViewController, rootVC is UINavigationController {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let intent = application.userActivity?.activityType {
-                print("INTENT is \(intent)")
+            if let interaction = userActivity.interaction, let intent = interaction.intent as? INStartPhotoPlaybackIntent {
+                print("INTENT is \(userActivity.activityType)")
+                
+                if let searchTerms = intent.searchTerms {
+                    print(searchTerms)
+                }
+                
                 let slideshowVC = storyboard.instantiateViewController(withIdentifier: "slideshowVC") as! SlideshowVC
                 slideshowVC.numberOfPhotosToShow = 3
-                slideshowVC.intentType = intent
+                slideshowVC.intentType = "\(userActivity.activityType)"
                 rootVC.addChildViewController(slideshowVC)
             } else {
                 print("NO INTENT")
             }
         }
-        
+
+    
         return true
     }
 
@@ -54,7 +65,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

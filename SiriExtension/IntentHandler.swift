@@ -7,6 +7,7 @@
 //
 
 import Intents
+import Photos
 
 class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMessageIntentHandling {
     
@@ -17,28 +18,66 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         return self
     }
     
-    // MARK: - INStartPhotoPlaybackIntentHandling
+// MARK: - INStartPhotoPlaybackIntentHandling
     //TODO ALL
-    
-//    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
-//        completion
-//    }
-//
-//    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                          with completion: @escaping (INStringResolutionResult) -> Void) {
-//        
-//        
-//    }
-//
-//    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
-//        
-//    }
-//    
+
+    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
+        if let dateCreated = intent.dateCreated {
+            completion(INDateComponentsRangeResolutionResult.success(with: dateCreated))
+        } else {
+            completion(INDateComponentsRangeResolutionResult.needsValue())
+        }
+    }
+
+    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                          with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let album = intent.albumName {
+            let userAlbumsOptions = PHFetchOptions()
+            userAlbumsOptions.predicate = NSPredicate.init(format: "estimatedAssetCount > %@", 0)
+            
+            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: userAlbumsOptions)
+            userAlbums.enumerateObjects({
+                (collection, index, stop) in
+                
+                if let albumName = collection.localizedTitle {
+                    if (album == albumName) {
+                        completion(INStringResolutionResult.success(with: albumName))
+                        return
+                    }
+                }
+            })
+            
+            // Could not find album
+            completion(INStringResolutionResult.unsupported())
+        } else {
+            completion(INStringResolutionResult.needsValue())
+        }
+    }
+
+    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
+        if let people = intent.peopleInPhoto {
+            
+            // If no people, prompt
+            if people.count == 0 {
+                completion([INPersonResolutionResult.needsValue()])
+                return
+            }
+            
+            var successResults = [INPersonResolutionResult]()
+            for person in people {
+                successResults.append(INPersonResolutionResult.success(with: person))
+            }
+            completion(successResults)
+        } else {
+            completion([INPersonResolutionResult.needsValue()])
+        }
+    }
+
     func resolveLocationCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
                                 with completion: @escaping (INPlacemarkResolutionResult) -> Void) {
-        if let location = intent.locationCreated, let _ = location.locality {
+        if let location = intent.locationCreated {
             completion(INPlacemarkResolutionResult.success(with: location))
         } else {
             completion(INPlacemarkResolutionResult.needsValue())
@@ -54,12 +93,14 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
     
     func handle(startPhotoPlayback intent: INStartPhotoPlaybackIntent,
                 completion: @escaping (INStartPhotoPlaybackIntentResponse) -> Void) {
-        let userActivity = NSUserActivity(activityType: NSStringFromClass(INStartPhotoPlaybackIntent.self))
-        let response = INStartPhotoPlaybackIntentResponse(code: .continueInApp, userActivity: userActivity)
+        let activity = NSUserActivity(activityType: NSStringFromClass(INStartPhotoPlaybackIntent.self))
+        activity.addUserInfoEntries(from: ["Greeting": "Watup"])
+
+        let response = INStartPhotoPlaybackIntentResponse(code: .continueInApp, userActivity: activity)
         completion(response)
     }
     
-    // MARK: - INSendMessageIntentHandling
+// MARK: - INSendMessageIntentHandling
     
     // Implement resolution methods to provide additional information about your intent (optional).
     func resolveRecipients(forSendMessage intent: INSendMessageIntent, with completion: @escaping ([INPersonResolutionResult]) -> Void) {
@@ -105,7 +146,6 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
     }
     
     // Once resolution is completed, perform validation on the intent and provide confirmation (optional).
-    
     func confirm(sendMessage intent: INSendMessageIntent, completion: @escaping (INSendMessageIntentResponse) -> Void) {
         // Verify user is authenticated and your app is ready to send a message.
         
@@ -115,18 +155,14 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
     }
     
     // Handle the completed intent (required).
-    
     func handle(sendMessage intent: INSendMessageIntent, completion: @escaping (INSendMessageIntentResponse) -> Void) {
         // Implement your application logic to send a message here.
-        
         let userActivity = NSUserActivity(activityType: NSStringFromClass(INSendMessageIntent.self))
         let response = INSendMessageIntentResponse(code: .success, userActivity: userActivity)
         completion(response)
     }
     
-    // Implement handlers for each intent you wish to handle.  As an example for messages, you may wish to also handle searchForMessages and setMessageAttributes.
-    
-    // MARK: - INSearchForMessagesIntentHandling
+// MARK: - INSearchForMessagesIntentHandling
     
     func handle(searchForMessages intent: INSearchForMessagesIntent, completion: @escaping (INSearchForMessagesIntentResponse) -> Void) {
         // Implement your application logic to find a message that matches the information in the intent.
