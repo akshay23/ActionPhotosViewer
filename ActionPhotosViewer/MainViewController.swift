@@ -37,20 +37,6 @@ class MainViewController: UIViewController {
         navTitle.textAlignment = .center
         navTitle.font = UIFont.systemFont(ofSize: 17)
         navigationItem.titleView = navTitle
-        
-        if (PHPhotoLibrary.authorizationStatus() != .authorized) {
-            PHPhotoLibrary.requestAuthorization() {
-                status in
-                print("User's photo auth status is \(status.rawValue)")
-            }
-        }
-        
-        if (INPreferences.siriAuthorizationStatus() != .authorized) {
-            INPreferences.requestSiriAuthorization() {
-                status in
-                print("Siri auth is \(status.rawValue)")
-            }
-        }
     }
 
     override func didReceiveMemoryWarning() {

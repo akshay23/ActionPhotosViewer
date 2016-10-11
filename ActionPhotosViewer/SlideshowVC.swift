@@ -57,18 +57,26 @@ class SlideshowVC: UIViewController {
         stylePicker.dataSource = self
         stylePicker.delegate = self
         stylePicker.showsSelectionIndicator = true
-        
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
-        fetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: options)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        let options = PHFetchOptions()
         
-        images = []
-        currentShowIndex = 0
-        intentLabel.text = "No Intent"
+        // Date range from intent
+        if let creationDate = slideshowIntent?.dateCreated, let startDate = creationDate.startDateComponents?.date, let endDate = creationDate.endDateComponents?.date {
+            options.predicate = NSPredicate.init(format: "creationDate >= %@ AND creationDate <= %@", startDate as NSDate, endDate as NSDate)
+        }
+        
+        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+        fetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: options)
+
+        if let _ = slideshowIntent {
+            intentLabel.text = "INStartPhotoPlaybackIntent"
+        } else {
+            intentLabel.text = "No Intent"
+        }
         
         if let fetchResult = fetchResult, let intent = slideshowIntent, let location = intent.locationCreated {
             fetchResult.enumerateObjects({
@@ -88,12 +96,11 @@ class SlideshowVC: UIViewController {
         if images.count > 0 {
             stopButton.isEnabled = true
             restartButton.isEnabled = true
+            currentShowIndex = 0
             resetTimer()
             print("Slideshow timer started")
-        }
-        
-        if let intent = slideshowIntent {
-            intentLabel.text = intent.identifier
+        } else {
+            print("Nothing to show!")
         }
     }
 
@@ -134,11 +141,11 @@ class SlideshowVC: UIViewController {
     func requestAnImage(asset: PHAsset) {
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = true
+        
         imgManager.requestImage(for: asset,
                                 targetSize: slideshowImageView.frame.size,
                                 contentMode: PHImageContentMode.aspectFill,
-                                options: requestOptions)
-        {
+                                options: requestOptions) {
             (image, _) in
             
             // Add the returned image to your array

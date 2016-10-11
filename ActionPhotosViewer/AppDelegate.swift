@@ -8,6 +8,7 @@
 
 import UIKit
 import Intents
+import Photos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        if (PHPhotoLibrary.authorizationStatus() != .authorized) {
+            PHPhotoLibrary.requestAuthorization() {
+                status in
+                print("User's photo auth status is \(status.rawValue)")
+            }
+        }
+        
+        if (INPreferences.siriAuthorizationStatus() != .authorized) {
+            INPreferences.requestSiriAuthorization() {
+                status in
+                print("Siri auth is \(status.rawValue)")
+            }
+        }
+        
         return true
     }
     
@@ -27,16 +42,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let interaction = userActivity.interaction, let intent = interaction.intent as? INStartPhotoPlaybackIntent {
                 print("INTENT is \(userActivity.activityType)")
                 
-                if let searchTerms = intent.searchTerms, searchTerms.count > 0 {
-                    print("Search terms are \(searchTerms)")
+                if let albumName = intent.albumName {
+                    print("Album name is \(albumName)")
                 }
                 
                 if let searchLocation = intent.locationCreated {
                     print("Search location is \(searchLocation)")
                 }
+                
+                if let creationDate = intent.dateCreated, let startDate = creationDate.startDateComponents?.date, let endDate = creationDate.endDateComponents?.date {
+                    print("Created start date is \(startDate)")
+                    print("Created end date is \(endDate)")
+                }
 
                 let slideshowVC = storyboard.instantiateViewController(withIdentifier: "slideshowVC") as! SlideshowVC
-                slideshowVC.numberOfPhotosToShow = 3
+                slideshowVC.numberOfPhotosToShow = 10
                 slideshowVC.slideshowIntent = intent
                 rootVC.pushViewController(slideshowVC, animated: true)
             } else {

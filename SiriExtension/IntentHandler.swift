@@ -19,54 +19,44 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
     }
     
 // MARK: - INStartPhotoPlaybackIntentHandling
-    //TODO ALL
 
-//    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
-//        if let dateCreated = intent.dateCreated {
-//            completion(INDateComponentsRangeResolutionResult.success(with: dateCreated))
-//        }
-//    }
+    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
+        if let dateCreated = intent.dateCreated {
+            completion(INDateComponentsRangeResolutionResult.success(with: dateCreated))
+        } else {
+            completion(INDateComponentsRangeResolutionResult.notRequired())
+        }
+    }
 
-//    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-//                          with completion: @escaping (INStringResolutionResult) -> Void) {
-//        if let album = intent.albumName, (intent.locationCreated == nil) {
-//            let userAlbumsOptions = PHFetchOptions()
-//            userAlbumsOptions.predicate = NSPredicate.init(format: "estimatedAssetCount > %@", 0)
-//            
-//            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: userAlbumsOptions)
-//            userAlbums.enumerateObjects({
-//                (collection, index, stop) in
-//                
-//                if let albumName = collection.localizedTitle {
-//                    if (album == albumName) {
-//                        completion(INStringResolutionResult.success(with: albumName))
-//                        return
-//                    }
-//                }
-//            })
-//            
-//            // Could not find album
-//            completion(INStringResolutionResult.unsupported())
-//        }
-//    }
+    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+                          with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let album = intent.albumName {
+            let userAlbumsOptions = PHFetchOptions()
+            userAlbumsOptions.predicate = NSPredicate.init(format: "estimatedAssetCount > 0")
+            
+            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: userAlbumsOptions)
+            userAlbums.enumerateObjects({
+                (collection, index, stop) in
+                
+                if let albumName = collection.localizedTitle {
+                    if (album == albumName) {
+                        completion(INStringResolutionResult.success(with: albumName))
+                        return
+                    }
+                }
+            })
+            
+            // Could not find album
+            completion(INStringResolutionResult.unsupported())
+        } else {
+            completion(INStringResolutionResult.notRequired())
+        }
+    }
 
+// Doesn't make sense to support (not keeping track of people info in app)
 //    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
 //                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
-//        if let people = intent.peopleInPhoto {
-//            
-//            // If no people, prompt
-//            if people.count == 0 {
-//                completion([INPersonResolutionResult.needsValue()])
-//                return
-//            }
-//            
-//            var successResults = [INPersonResolutionResult]()
-//            for person in people {
-//                successResults.append(INPersonResolutionResult.success(with: person))
-//            }
-//            completion(successResults)
-//        }
 //    }
 
     func resolveLocationCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
@@ -74,7 +64,7 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         if let location = intent.locationCreated {
             completion(INPlacemarkResolutionResult.success(with: location))
         } else {
-            completion(INPlacemarkResolutionResult.needsValue())
+            completion(INPlacemarkResolutionResult.notRequired())
         }
     }
     
