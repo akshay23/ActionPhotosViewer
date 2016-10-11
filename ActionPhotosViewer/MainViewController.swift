@@ -47,7 +47,7 @@ class MainViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "show slideshow" && segue.destination is SlideshowVC {
             let photosVC = segue.destination as! SlideshowVC
-            photosVC.numberOfPhotosToShow = Int(numberOfPhotosTxtField.text!)
+            photosVC.numberOfPhotosToShow = Int(numberOfPhotosTxtField.text!)!
             hideKeyboard()
         }
     }
@@ -59,7 +59,7 @@ class MainViewController: UIViewController {
     }
     
     func checkTextField() {
-        if let text = numberOfPhotosTxtField.text,!text.isEmpty {
+        if let text = numberOfPhotosTxtField.text, !text.isEmpty {
             viewPhotosButton.isEnabled = true
         } else {
             viewPhotosButton.isEnabled = false

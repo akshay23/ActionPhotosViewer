@@ -56,8 +56,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
 
                 let slideshowVC = storyboard.instantiateViewController(withIdentifier: "slideshowVC") as! SlideshowVC
-                slideshowVC.numberOfPhotosToShow = 10
                 slideshowVC.slideshowIntent = intent
+                
+                if let _ = rootVC.visibleViewController as? SlideshowVC {
+                    rootVC.popViewController(animated: true)
+                }
+                
                 rootVC.pushViewController(slideshowVC, animated: true)
             } else {
                 print("NO INTENT")

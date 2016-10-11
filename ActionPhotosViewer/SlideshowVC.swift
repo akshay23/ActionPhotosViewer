@@ -19,7 +19,7 @@ class SlideshowVC: UIViewController {
     @IBOutlet var stylePicker: UIPickerView!
     @IBOutlet var intentLabel: UILabel!
     
-    var numberOfPhotosToShow: Int!
+    var numberOfPhotosToShow: Int = 10
     var currentShowIndex: Int!
     var images = [UIImage]()
     var showTimer: Timer!
