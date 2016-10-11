@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import Intents
 import Foundation
 
 class SlideshowVC: UIViewController {
@@ -20,10 +21,14 @@ class SlideshowVC: UIViewController {
     
     var numberOfPhotosToShow: Int!
     var currentShowIndex: Int!
-    var images: [UIImage]?
+    var images = [UIImage]()
     var showTimer: Timer!
     var styles: [String] = ["None","RubyRed","BigBlue","GoGreen"]
-    var intentType: String?
+    var slideshowIntent: INStartPhotoPlaybackIntent?
+    var filteredAssets = [PHAsset]()
+    var fetchResult: PHFetchResult<PHAsset>?
+    
+    let imgManager = PHImageManager.default()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +57,10 @@ class SlideshowVC: UIViewController {
         stylePicker.dataSource = self
         stylePicker.delegate = self
         stylePicker.showsSelectionIndicator = true
+        
+        let options = PHFetchOptions()
+        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+        fetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: options)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,19 +68,32 @@ class SlideshowVC: UIViewController {
         
         images = []
         currentShowIndex = 0
-        fetchPhotoAtIndexFromEnd(index: 0)
+        intentLabel.text = "No Intent"
         
-        if let images = images, images.count > 0 {
+        if let fetchResult = fetchResult, let intent = slideshowIntent, let location = intent.locationCreated {
+            fetchResult.enumerateObjects({
+                (asset, index, complete) in
+                
+                let distanceThreshold: CLLocationDistance = 100000.0;  // meters
+                if let pLocation = asset.location, let iLocation = location.location {
+                    if (pLocation.distance(from: iLocation) <= distanceThreshold) {
+                        self.filteredAssets.append(asset)
+                    }
+                }
+            })
+        }
+
+        fetchPhotos()
+        
+        if images.count > 0 {
             stopButton.isEnabled = true
             restartButton.isEnabled = true
             resetTimer()
             print("Slideshow timer started")
         }
         
-        if let intentType = intentType {
-            intentLabel.text = intentType
-        } else {
-            intentLabel.text = "No Intent"
+        if let intent = slideshowIntent {
+            intentLabel.text = intent.identifier
         }
     }
 
@@ -80,43 +102,17 @@ class SlideshowVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func fetchPhotoAtIndexFromEnd(index: Int) {
-        let imgManager = PHImageManager.default()
-        let fetchResult: PHFetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: nil)
-        
-        // Note that if the request is not set to synchronous
-        // the requestImageForAsset will return both the image
-        // and thumbnail; by setting synchronous to true it
-        // will return just the thumbnail
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = true
-        
-        // If the fetch result isn't empty,
-        // proceed with the image request
-        if fetchResult.count > 0 {
-            // Perform the image request
-            imgManager.requestImage(for: fetchResult.object(at: fetchResult.count - 1 - index) as PHAsset,
-                                    targetSize: slideshowImageView.frame.size,
-                                    contentMode: PHImageContentMode.aspectFill,
-                                    options: requestOptions)
-            {
-                (image, _) in
-                
-                // Add the returned image to your array
-                if let image = image {
-                    self.images!.append(image)
+    func fetchPhotos() {
+        if let fetchResult = fetchResult, fetchResult.count > 0 {
+            if (self.filteredAssets.count >= numberOfPhotosToShow) {
+                for index in 0...numberOfPhotosToShow-1 {
+                    let asset = self.filteredAssets[index]
+                    requestAnImage(asset: asset)
                 }
-                
-                // If you haven't already reached the first
-                // index of the fetch result and if you haven't
-                // already stored all of the images you need,
-                // perform the fetch request again with an
-                // incremented index
-                if index + 1 < fetchResult.count && self.images!.count < self.numberOfPhotosToShow {
-                    self.fetchPhotoAtIndexFromEnd(index: index + 1)
-                } else {
-                    // Else you have completed creating your array
-                    print("Completed array: \(self.images)")
+            } else if (fetchResult.count >= numberOfPhotosToShow) {
+                for index in 0...numberOfPhotosToShow-1 {
+                    let asset = fetchResult.object(at: index)
+                    requestAnImage(asset: asset)
                 }
             }
         }
@@ -131,8 +127,26 @@ class SlideshowVC: UIViewController {
     }
 
     func showNextPhoto() {
-        slideshowImageView.image = images![currentShowIndex%numberOfPhotosToShow]
+        slideshowImageView.image = images[currentShowIndex%numberOfPhotosToShow]
         currentShowIndex! += 1
+    }
+    
+    func requestAnImage(asset: PHAsset) {
+        let requestOptions = PHImageRequestOptions()
+        requestOptions.isSynchronous = true
+        imgManager.requestImage(for: asset,
+                                targetSize: slideshowImageView.frame.size,
+                                contentMode: PHImageContentMode.aspectFill,
+                                options: requestOptions)
+        {
+            (image, _) in
+            
+            // Add the returned image to your array
+            if let image = image {
+                self.images.append(image)
+            }
+        }
+
     }
 }
 

@@ -22,19 +22,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
         
         // Get storyboard
-        if let window = self.window, let rootVC = window.rootViewController, rootVC is UINavigationController {
+        if let window = self.window, let rootVC = window.rootViewController as? UINavigationController {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let interaction = userActivity.interaction, let intent = interaction.intent as? INStartPhotoPlaybackIntent {
                 print("INTENT is \(userActivity.activityType)")
                 
-                if let searchTerms = intent.searchTerms {
-                    print(searchTerms)
+                if let searchTerms = intent.searchTerms, searchTerms.count > 0 {
+                    print("Search terms are \(searchTerms)")
                 }
                 
+                if let searchLocation = intent.locationCreated {
+                    print("Search location is \(searchLocation)")
+                }
+
                 let slideshowVC = storyboard.instantiateViewController(withIdentifier: "slideshowVC") as! SlideshowVC
                 slideshowVC.numberOfPhotosToShow = 3
-                slideshowVC.intentType = "\(userActivity.activityType)"
-                rootVC.addChildViewController(slideshowVC)
+                slideshowVC.slideshowIntent = intent
+                rootVC.pushViewController(slideshowVC, animated: true)
             } else {
                 print("NO INTENT")
             }

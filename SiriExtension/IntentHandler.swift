@@ -21,59 +21,53 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
 // MARK: - INStartPhotoPlaybackIntentHandling
     //TODO ALL
 
-    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
-        if let dateCreated = intent.dateCreated {
-            completion(INDateComponentsRangeResolutionResult.success(with: dateCreated))
-        } else {
-            completion(INDateComponentsRangeResolutionResult.needsValue())
-        }
-    }
+//    func resolveDateCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+//                            with completion: @escaping (INDateComponentsRangeResolutionResult) -> Void) {
+//        if let dateCreated = intent.dateCreated {
+//            completion(INDateComponentsRangeResolutionResult.success(with: dateCreated))
+//        }
+//    }
 
-    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-                          with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let album = intent.albumName {
-            let userAlbumsOptions = PHFetchOptions()
-            userAlbumsOptions.predicate = NSPredicate.init(format: "estimatedAssetCount > %@", 0)
-            
-            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: userAlbumsOptions)
-            userAlbums.enumerateObjects({
-                (collection, index, stop) in
-                
-                if let albumName = collection.localizedTitle {
-                    if (album == albumName) {
-                        completion(INStringResolutionResult.success(with: albumName))
-                        return
-                    }
-                }
-            })
-            
-            // Could not find album
-            completion(INStringResolutionResult.unsupported())
-        } else {
-            completion(INStringResolutionResult.needsValue())
-        }
-    }
+//    func resolveAlbumName(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+//                          with completion: @escaping (INStringResolutionResult) -> Void) {
+//        if let album = intent.albumName, (intent.locationCreated == nil) {
+//            let userAlbumsOptions = PHFetchOptions()
+//            userAlbumsOptions.predicate = NSPredicate.init(format: "estimatedAssetCount > %@", 0)
+//            
+//            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: userAlbumsOptions)
+//            userAlbums.enumerateObjects({
+//                (collection, index, stop) in
+//                
+//                if let albumName = collection.localizedTitle {
+//                    if (album == albumName) {
+//                        completion(INStringResolutionResult.success(with: albumName))
+//                        return
+//                    }
+//                }
+//            })
+//            
+//            // Could not find album
+//            completion(INStringResolutionResult.unsupported())
+//        }
+//    }
 
-    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
-                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
-        if let people = intent.peopleInPhoto {
-            
-            // If no people, prompt
-            if people.count == 0 {
-                completion([INPersonResolutionResult.needsValue()])
-                return
-            }
-            
-            var successResults = [INPersonResolutionResult]()
-            for person in people {
-                successResults.append(INPersonResolutionResult.success(with: person))
-            }
-            completion(successResults)
-        } else {
-            completion([INPersonResolutionResult.needsValue()])
-        }
-    }
+//    func resolvePeopleInPhoto(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
+//                              with completion: @escaping ([INPersonResolutionResult]) -> Void) {
+//        if let people = intent.peopleInPhoto {
+//            
+//            // If no people, prompt
+//            if people.count == 0 {
+//                completion([INPersonResolutionResult.needsValue()])
+//                return
+//            }
+//            
+//            var successResults = [INPersonResolutionResult]()
+//            for person in people {
+//                successResults.append(INPersonResolutionResult.success(with: person))
+//            }
+//            completion(successResults)
+//        }
+//    }
 
     func resolveLocationCreated(forStartPhotoPlayback intent: INStartPhotoPlaybackIntent,
                                 with completion: @escaping (INPlacemarkResolutionResult) -> Void) {
@@ -180,7 +174,7 @@ class IntentHandler: INExtension, INStartPhotoPlaybackIntentHandling, INSendMess
         completion(response)
     }
     
-    // MARK: - INSetMessageAttributeIntentHandling
+// MARK: - INSetMessageAttributeIntentHandling
     
     func handle(setMessageAttribute intent: INSetMessageAttributeIntent, completion: @escaping (INSetMessageAttributeIntentResponse) -> Void) {
         // Implement your application logic to set the message attribute here.
