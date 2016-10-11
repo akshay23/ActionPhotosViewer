@@ -61,37 +61,18 @@ class SlideshowVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        let options = PHFetchOptions()
         
-        // Date range from intent
-        if let creationDate = slideshowIntent?.dateCreated, let startDate = creationDate.startDateComponents?.date, let endDate = creationDate.endDateComponents?.date {
-            options.predicate = NSPredicate.init(format: "creationDate >= %@ AND creationDate <= %@", startDate as NSDate, endDate as NSDate)
-        }
-        
-        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
-        fetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: options)
-
         if let _ = slideshowIntent {
             intentLabel.text = "INStartPhotoPlaybackIntent"
         } else {
             intentLabel.text = "No Intent"
         }
-        
-        if let fetchResult = fetchResult, let intent = slideshowIntent, let location = intent.locationCreated {
-            fetchResult.enumerateObjects({
-                (asset, index, complete) in
-                
-                let distanceThreshold: CLLocationDistance = 100000.0;  // meters
-                if let pLocation = asset.location, let iLocation = location.location {
-                    if (pLocation.distance(from: iLocation) <= distanceThreshold) {
-                        self.filteredAssets.append(asset)
-                    }
-                }
-            })
-        }
 
-        fetchPhotos()
+        // Setup asset fetch
+        setupAssets()
+        
+        // Fetch 'em
+        fetchAssets()
         
         if images.count > 0 {
             stopButton.isEnabled = true
@@ -109,20 +90,87 @@ class SlideshowVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func fetchPhotos() {
-        if let fetchResult = fetchResult, fetchResult.count > 0 {
-            if (self.filteredAssets.count >= numberOfPhotosToShow) {
+    func setupAssets() {
+        // Sort images by creation date, descending
+        let options = PHFetchOptions()
+        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+        
+        // Date range from intent
+        if let creationDate = slideshowIntent?.dateCreated, let startDate = creationDate.startDateComponents?.date, let endDate = creationDate.endDateComponents?.date {
+            options.predicate = NSPredicate.init(format: "creationDate >= %@ AND creationDate <= %@", startDate as NSDate, endDate as NSDate)
+        }
+        
+        if let intent = slideshowIntent, let albumName = intent.albumName {
+            // Album fetch (if any)
+            let albumFetchOptions = PHFetchOptions()
+            albumFetchOptions.predicate = NSPredicate.init(format: "title = %@", albumName)
+            
+            let albumCollection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: albumFetchOptions)
+            if (albumCollection.count > 0) {
+                fetchResult = PHAsset.fetchAssets(in: albumCollection.firstObject!, options: options)
+            }
+        } else {
+            // Fetch all the assets
+            fetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: options)
+        }
+        
+        // Filter out images that are from given location
+        if let fetchResult = self.fetchResult, let intent = slideshowIntent, let location = intent.locationCreated {
+            fetchResult.enumerateObjects({
+                (asset, index, complete) in
+                
+                let distanceThreshold: CLLocationDistance = 10000.0;  // meters
+                if let pLocation = asset.location, let iLocation = location.location {
+                    if (pLocation.distance(from: iLocation) <= distanceThreshold) {
+                        self.filteredAssets.append(asset)
+                    }
+                }
+            })
+        }
+    }
+    
+    func fetchAssets() {
+        if let fetchResult = self.fetchResult, fetchResult.count > 0 {
+            if (self.filteredAssets.count > 0) {
                 for index in 0...numberOfPhotosToShow-1 {
+                    if (index > self.filteredAssets.count - 1) {
+                        return
+                    }
                     let asset = self.filteredAssets[index]
                     requestAnImage(asset: asset)
                 }
-            } else if (fetchResult.count >= numberOfPhotosToShow) {
+            } else if (fetchResult.count > 0) {
                 for index in 0...numberOfPhotosToShow-1 {
+                    if (index > fetchResult.count - 1) {
+                        return
+                    }
                     let asset = fetchResult.object(at: index)
                     requestAnImage(asset: asset)
                 }
             }
         }
+        
+//        var currentCount = 1
+//        if (self.filteredAssets.count >= 0) {
+//            for asset in self.filteredAssets {
+//                requestAnImage(asset: asset)
+//                currentCount += 1
+//                if (currentCount == numberOfPhotosToShow) {
+//                    return
+//                }
+//            }
+//        } else if let fetchResult = self.fetchResult, fetchResult.count > 0 {
+//            fetchResult.enumerateObjects({
+//                (asset, index, complete) in
+//                
+//                self.requestAnImage(asset: asset)
+//                currentCount += 1
+//                if (currentCount == self.numberOfPhotosToShow) {
+//                    return
+//                }
+//            })
+//        }
+
     }
     
     func resetTimer() {
@@ -134,8 +182,12 @@ class SlideshowVC: UIViewController {
     }
 
     func showNextPhoto() {
-        slideshowImageView.image = images[currentShowIndex%numberOfPhotosToShow]
+        slideshowImageView.image = images[currentShowIndex]
         currentShowIndex! += 1
+        
+        if (currentShowIndex >= images.count) {
+            currentShowIndex = 0
+        }
     }
     
     func requestAnImage(asset: PHAsset) {
