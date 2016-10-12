@@ -27,8 +27,6 @@ class SlideshowVC: UIViewController {
     var slideshowIntent: INStartPhotoPlaybackIntent?
     var filteredAssets = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>?
-    
-    let imgManager = PHImageManager.default()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,7 +128,7 @@ class SlideshowVC: UIViewController {
     }
     
     func fetchAssets() {
-        if let fetchResult = self.fetchResult, fetchResult.count > 0 {
+        if let fetchResult = self.fetchResult {
             if (self.filteredAssets.count > 0) {
                 for index in 0...numberOfPhotosToShow-1 {
                     if (index > self.filteredAssets.count - 1) {
@@ -173,6 +171,25 @@ class SlideshowVC: UIViewController {
 
     }
     
+    func requestAnImage(asset: PHAsset) {
+        let requestOptions = PHImageRequestOptions()
+        requestOptions.isSynchronous = true
+        
+        let imgManager = PHImageManager.default()
+        imgManager.requestImage(for: asset,
+                                targetSize: slideshowImageView.frame.size,
+                                contentMode: PHImageContentMode.aspectFill,
+                                options: requestOptions) {
+                                    (image, _) in
+                                    
+                                    // Add the returned image to your array
+                                    if let image = image {
+                                        self.images.append(image)
+                                    }
+        }
+        
+    }
+    
     func resetTimer() {
         showTimer = Timer.scheduledTimer(timeInterval: 1.0,
                                          target: self,
@@ -188,24 +205,6 @@ class SlideshowVC: UIViewController {
         if (currentShowIndex >= images.count) {
             currentShowIndex = 0
         }
-    }
-    
-    func requestAnImage(asset: PHAsset) {
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = true
-        
-        imgManager.requestImage(for: asset,
-                                targetSize: slideshowImageView.frame.size,
-                                contentMode: PHImageContentMode.aspectFill,
-                                options: requestOptions) {
-            (image, _) in
-            
-            // Add the returned image to your array
-            if let image = image {
-                self.images.append(image)
-            }
-        }
-
     }
 }
 

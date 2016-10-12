@@ -25,9 +25,7 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>IntentsRestrictedWhileLocked</key>
-			<array>
-				<string>INStartPhotoPlaybackIntent</string>
-			</array>
+			<array/>
 			<key>IntentsSupported</key>
 			<array>
 				<string>INStartPhotoPlaybackIntent</string>
