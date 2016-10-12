@@ -59,7 +59,7 @@ class MainViewController: UIViewController {
     }
     
     func checkTextField() {
-        if let text = numberOfPhotosTxtField.text, !text.isEmpty {
+        if let text = numberOfPhotosTxtField.text, !text.isEmpty, Int(text) != 0 {
             viewPhotosButton.isEnabled = true
         } else {
             viewPhotosButton.isEnabled = false

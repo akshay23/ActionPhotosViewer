@@ -20,7 +20,7 @@ class SlideshowVC: UIViewController {
     @IBOutlet var stylePicker: UIPickerView!
     @IBOutlet var intentLabel: UILabel!
     
-    var numberOfPhotosToShow: Int = 10
+    var numberOfPhotosToShow: Int = 20
     var currentShowIndex: Int = 0
     var images = [UIImage]()
     var showTimer: Timer!
@@ -70,6 +70,7 @@ class SlideshowVC: UIViewController {
                 self.restartButton.isEnabled = true
                 print("Slideshow timer started")
             } else {
+                self.progressHUD.dismiss(animated: true)
                 print("Nothing to show!")
             }
         }
@@ -140,7 +141,7 @@ class SlideshowVC: UIViewController {
                 if (self.filteredAssets.count > 0) {
                     for index in 0...self.numberOfPhotosToShow-1 {
                         if (index > self.filteredAssets.count - 1) {
-                            return
+                            break
                         }
                         let asset = self.filteredAssets[index]
                         self.requestAnImage(asset: asset)
@@ -148,7 +149,7 @@ class SlideshowVC: UIViewController {
                 } else if (fetchResult.count > 0) {
                     for index in 0...self.numberOfPhotosToShow-1 {
                         if (index > fetchResult.count - 1) {
-                            return
+                            break
                         }
                         let asset = fetchResult.object(at: index)
                         self.requestAnImage(asset: asset)
