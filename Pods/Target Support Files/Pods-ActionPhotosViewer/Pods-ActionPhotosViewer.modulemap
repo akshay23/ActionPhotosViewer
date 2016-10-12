@@ -1,0 +1,6 @@
+framework module Pods_ActionPhotosViewer {
+  umbrella header "Pods-ActionPhotosViewer-umbrella.h"
+
+  export *
+  module * { export * }
+}

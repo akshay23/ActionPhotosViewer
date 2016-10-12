@@ -10,6 +10,7 @@ import UIKit
 import Photos
 import Intents
 import Foundation
+import JGProgressHUD
 
 class SlideshowVC: UIViewController {
 
@@ -27,6 +28,7 @@ class SlideshowVC: UIViewController {
     var slideshowIntent: INStartPhotoPlaybackIntent?
     var filteredAssets = [PHAsset]()
     var fetchResult: PHFetchResult<PHAsset>?
+    var progressHUD: JGProgressHUD = JGProgressHUD(style: .extraLight)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +85,10 @@ class SlideshowVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Show progress HUD
+        progressHUD.textLabel.text = "Loading slideshow..."
+        progressHUD.show(in: view, animated: false)
     }
 
     override func didReceiveMemoryWarning() {
@@ -188,6 +194,10 @@ class SlideshowVC: UIViewController {
     func showNextPhoto() {
         slideshowImageView.image = images[currentShowIndex]
         currentShowIndex! += 1
+        
+        if (progressHUD.isVisible) {
+            progressHUD.dismiss(animated: true)
+        }
         
         if (currentShowIndex >= images.count) {
             currentShowIndex = 0
