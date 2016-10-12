@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ParameterVocabularies</key>
+	<array>
+		<dict>
+			<key>ParameterNames</key>
+			<array>
+				<string>INStartPhotoPlaybackIntent.style</string>
+			</array>
+			<key>ParameterVocabulary</key>
+			<array>
+				<dict>
+					<key>VocabularyItemIdentifier</key>
+					<string>RubyRed</string>
+					<key>VocabularyItemSynonyms</key>
+					<array>
+						<dict>
+							<key>VocabularyItemPhrase</key>
+							<string>RubyRed</string>
+							<key>VocabularyItemPronunciation</key>
+							<string>roo bee red</string>
+							<key>VocabularyItemExamples</key>
+							<array>
+								<string>Create a slideshow in ActionPhotosViewer using the RubyRed style</string>
+								<string>Use the RubyRed style in ActionPhotosViewer to start a slideshow</string>
+								<string>In ActionPhotosViewer create a slideshow with the RubyRed style</string>
+							</array>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>VocabularyItemIdentifier</key>
+					<string>BigBlue</string>
+					<key>VocabularyItemSynonyms</key>
+					<array>
+						<dict>
+							<key>VocabularyItemPhrase</key>
+							<string>BigBlue</string>
+							<key>VocabularyItemPronunciation</key>
+							<string>big bloo</string>
+							<key>VocabularyItemExamples</key>
+							<array>
+								<string>Create a slideshow in ActionPhotosViewer using the BigBlue style</string>
+								<string>Use the BigBlue style in ActionPhotosViewer to start a slideshow</string>
+								<string>In ActionPhotosViewer create a slideshow with the BigBlue style</string>
+							</array>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+	</array>
+	<key>IntentPhrases</key>
+	<array>
+		<dict>
+			<key>IntentName</key>
+			<string>INStartPhotoPlaybackIntent.styleName</string>
+			<key>IntentExamples</key>
+			<array>
+				<string>Start a slideshow in ActionPhotosViewer</string>
+				<string>Use the Ruby Red style in ActionPhotosViewer to start a slideshow</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

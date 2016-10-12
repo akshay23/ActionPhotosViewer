@@ -60,6 +60,7 @@ class SlideshowVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Setup the text in the label
         if let _ = slideshowIntent {
             intentLabel.text = "INStartPhotoPlaybackIntent"
         } else {
@@ -72,6 +73,7 @@ class SlideshowVC: UIViewController {
         // Fetch 'em
         fetchAssets()
         
+        // Start timer if we have images
         if images.count > 0 {
             stopButton.isEnabled = true
             restartButton.isEnabled = true
@@ -147,28 +149,6 @@ class SlideshowVC: UIViewController {
                 }
             }
         }
-        
-//        var currentCount = 1
-//        if (self.filteredAssets.count >= 0) {
-//            for asset in self.filteredAssets {
-//                requestAnImage(asset: asset)
-//                currentCount += 1
-//                if (currentCount == numberOfPhotosToShow) {
-//                    return
-//                }
-//            }
-//        } else if let fetchResult = self.fetchResult, fetchResult.count > 0 {
-//            fetchResult.enumerateObjects({
-//                (asset, index, complete) in
-//                
-//                self.requestAnImage(asset: asset)
-//                currentCount += 1
-//                if (currentCount == self.numberOfPhotosToShow) {
-//                    return
-//                }
-//            })
-//        }
-
     }
     
     func requestAnImage(asset: PHAsset) {
