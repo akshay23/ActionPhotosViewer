@@ -55,10 +55,23 @@ class SlideshowVC: UIViewController {
         stylePicker.dataSource = self
         stylePicker.delegate = self
         stylePicker.showsSelectionIndicator = true
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        
+        // Setup asset fetch
+        setupAssets()
+        
+        // Fetch 'em (with completion)
+        fetchAssets() {
+            // Start timer if we have images
+            if self.images.count > 0 {
+                self.currentShowIndex = 0
+                self.resetTimer()
+                self.stopButton.isEnabled = true
+                self.restartButton.isEnabled = true
+                print("Slideshow timer started")
+            } else {
+                print("Nothing to show!")
+            }
+        }
         
         // Setup the text in the label
         if let _ = slideshowIntent {
@@ -66,23 +79,10 @@ class SlideshowVC: UIViewController {
         } else {
             intentLabel.text = "No Intent"
         }
-
-        // Setup asset fetch
-        setupAssets()
-        
-        // Fetch 'em
-        fetchAssets()
-        
-        // Start timer if we have images
-        if images.count > 0 {
-            stopButton.isEnabled = true
-            restartButton.isEnabled = true
-            currentShowIndex = 0
-            resetTimer()
-            print("Slideshow timer started")
-        } else {
-            print("Nothing to show!")
-        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func didReceiveMemoryWarning() {
@@ -129,30 +129,37 @@ class SlideshowVC: UIViewController {
         }
     }
     
-    func fetchAssets() {
-        if let fetchResult = self.fetchResult {
-            if (self.filteredAssets.count > 0) {
-                for index in 0...numberOfPhotosToShow-1 {
-                    if (index > self.filteredAssets.count - 1) {
-                        return
+    func fetchAssets(completion: @escaping () -> ()) {
+        DispatchQueue.global(qos: .background).async {
+            if let fetchResult = self.fetchResult {
+                if (self.filteredAssets.count > 0) {
+                    for index in 0...self.numberOfPhotosToShow-1 {
+                        if (index > self.filteredAssets.count - 1) {
+                            return
+                        }
+                        let asset = self.filteredAssets[index]
+                        self.requestAnImage(asset: asset)
                     }
-                    let asset = self.filteredAssets[index]
-                    requestAnImage(asset: asset)
-                }
-            } else if (fetchResult.count > 0) {
-                for index in 0...numberOfPhotosToShow-1 {
-                    if (index > fetchResult.count - 1) {
-                        return
+                } else if (fetchResult.count > 0) {
+                    for index in 0...self.numberOfPhotosToShow-1 {
+                        if (index > fetchResult.count - 1) {
+                            return
+                        }
+                        let asset = fetchResult.object(at: index)
+                        self.requestAnImage(asset: asset)
                     }
-                    let asset = fetchResult.object(at: index)
-                    requestAnImage(asset: asset)
                 }
+            }
+            
+            DispatchQueue.main.async {
+                completion()
             }
         }
     }
     
     func requestAnImage(asset: PHAsset) {
         let requestOptions = PHImageRequestOptions()
+        requestOptions.deliveryMode = .highQualityFormat
         requestOptions.isSynchronous = true
         
         let imgManager = PHImageManager.default()
