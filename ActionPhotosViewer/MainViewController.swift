@@ -30,7 +30,7 @@ class MainViewController: UIViewController {
         let viewTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MainViewController.hideKeyboard))
         view.addGestureRecognizer(viewTap)
         
-        let navTitle: UITextView = UITextView(frame: CGRect(x: 0, y: 0, width: 200, height: (navigationController?.navigationBar.frame.height)!))
+        let navTitle: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: (navigationController?.navigationBar.frame.height)!))
         navTitle.text = "Welcome to ActionPhotosViewer"
         navTitle.textColor = UIColor.purple
         navTitle.backgroundColor = UIColor.clear

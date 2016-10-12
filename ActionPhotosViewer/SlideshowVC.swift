@@ -21,7 +21,7 @@ class SlideshowVC: UIViewController {
     @IBOutlet var intentLabel: UILabel!
     
     var numberOfPhotosToShow: Int = 10
-    var currentShowIndex: Int!
+    var currentShowIndex: Int = 0
     var images = [UIImage]()
     var showTimer: Timer!
     var styles: [String] = ["None","RubyRed","BigBlue","GoGreen"]
@@ -46,8 +46,8 @@ class SlideshowVC: UIViewController {
         slideshowImageView.layer.shadowRadius = 5
         slideshowImageView.layer.shadowOffset = CGSize(width: 5, height: 5)
         
-        let navTitle: UITextView = UITextView(frame: CGRect(x: 0, y: 0, width: 200, height: (navigationController?.navigationBar.frame.height)!))
-        navTitle.text = "Slideshow Viewer"
+        let navTitle: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: (navigationController?.navigationBar.frame.height)!))
+        navTitle.text = "Slideshow View"
         navTitle.textColor = UIColor.purple
         navTitle.backgroundColor = UIColor.clear
         navTitle.textAlignment = .center
@@ -65,7 +65,6 @@ class SlideshowVC: UIViewController {
         fetchAssets() {
             // Start timer if we have images
             if self.images.count > 0 {
-                self.currentShowIndex = 0
                 self.resetTimer()
                 self.stopButton.isEnabled = true
                 self.restartButton.isEnabled = true
@@ -184,7 +183,7 @@ class SlideshowVC: UIViewController {
     }
     
     func resetTimer() {
-        showTimer = Timer.scheduledTimer(timeInterval: 1.0,
+        showTimer = Timer.scheduledTimer(timeInterval: 2.0,
                                          target: self,
                                          selector: #selector(SlideshowVC.showNextPhoto),
                                          userInfo: nil,
@@ -192,8 +191,10 @@ class SlideshowVC: UIViewController {
     }
 
     func showNextPhoto() {
-        slideshowImageView.image = images[currentShowIndex]
-        currentShowIndex! += 1
+        UIView.transition(with: slideshowImageView, duration: 0.5, options: .transitionFlipFromTop, animations: {
+            self.slideshowImageView.image = self.images[self.currentShowIndex]
+            self.currentShowIndex += 1
+        }, completion: nil)
         
         if (progressHUD.isVisible) {
             progressHUD.dismiss(animated: true)
